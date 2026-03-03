@@ -13,7 +13,14 @@ extern crate self as bevy_badnet;
 pub mod prelude {
     pub use crate::{
         BadnetPlugin, NetContext,
+        channel::ChannelId,
         messages::{Connected, Disconnected},
+        netsync::{
+            Netsync,
+            codec::{Decoder, Encoder, JsonCodec},
+            local::EntitySubscriptions,
+        },
+        session::Session,
         transport::{Tcp, Transport, Udp},
     };
 }
@@ -52,6 +59,7 @@ impl Plugin for BadnetPlugin {
     fn build(&self, app: &mut App) {
         app
             .insert_resource(NetContext::new(self))
+            .add_netsync::<Transform>()
             .add_message::<Connected>()
             .add_message::<Disconnected>()
             .configure_sets(Update, (
